@@ -15,5 +15,5 @@ public abstract class Athlete extends Participant {
 		this.points = points;
 	}
 
-	public abstract void compete();
+	public abstract int compete();
 }
