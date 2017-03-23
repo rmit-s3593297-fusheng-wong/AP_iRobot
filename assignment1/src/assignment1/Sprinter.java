@@ -7,8 +7,8 @@ public class Sprinter extends Athlete {
 	private final static int MAX_TIME =20;
 	private final static int MIN_TIME =10;
 
-	public Sprinter(String name, int age, String state, int points) {
-		super(name, age, state, points);
+	public Sprinter(String id,String name,int age,String state,int points){
+		super(id,name,age,state,points);
 	}
 	
 	@Override
