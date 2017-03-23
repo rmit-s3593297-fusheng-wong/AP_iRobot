@@ -6,7 +6,7 @@ public class Official extends Participant {
 		super(id,name,age,state);
 	}
 	
-	public Participant[] sumGame(Athlete[] athleteList){
+	public Athlete[] sumGame(Athlete[] athleteList){
 		//Sort Athletes according to finishTimes (Bubble Sort Reference - http://www.java-examples.com/java-bubble-sort-example)
 		for(int i=0;i<athleteList.length-1;i++){
 			Athlete temp=null;
