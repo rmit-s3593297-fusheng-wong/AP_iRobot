@@ -53,7 +53,7 @@ public class Game {
 		this.gamePrediction = gamePrediction;
 	}
 	
-	public void runGame(){
+	public int runGame(){
 		boolean isValid = true;
 		
 		//check there are enough athletes
@@ -79,10 +79,16 @@ public class Game {
 		
 		//display the results
 		displayGameResults();
+		
+		int prediction = 0;
+		/*if(this.gamePrediction = gameAthletesTimes[0].getID()){
+			prediction = 1;
+		}*/
+		return prediction;
 	}
 	
 	private void displayGameResults(){
-		
+		//
 	}
 	
 }
