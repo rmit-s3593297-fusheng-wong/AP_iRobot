@@ -1,13 +1,16 @@
+/*****Author - Jitender Singh Padda***********
+ *****Student Id - 3628144************************/
 package assignment1;
 
 public class Official extends Participant {
-
+	
+	//Constructor
 	public Official(String id,String name, int age, String state) {
 		super(id,name,age,state);
 	}
 	
 	public Athlete[] sumGame(Athlete[] athleteList){
-		//Sort Athletes according to finishTimes (Bubble Sort Reference - http://www.java-examples.com/java-bubble-sort-example)
+		//using Bubble Sort to sort athleteList in ascending order of their Time
 		for(int i=0;i<athleteList.length-1;i++){
 			Athlete temp=null;
 			for(int j=0;j<athleteList.length-i-1;j++){
@@ -18,7 +21,7 @@ public class Official extends Participant {
 				}
 			}
 		}
-		return athleteList;		
+		return athleteList;//sorted AthleteList in ascending order of their Time		
 	}
 }
 
