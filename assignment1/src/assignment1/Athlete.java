@@ -1,6 +1,6 @@
 /*****Author - Jitender Singh Padda***********
  *****Student Id - 3628144************************/
-package assignment1;
+package jitender;
 
 public abstract class Athlete extends Participant {
 	
@@ -11,11 +11,6 @@ public abstract class Athlete extends Participant {
 	public Athlete(String id,String name,int age,String state,int points) {
 		super(id,name,age,state);
 		this.points = points;
-	}
-	
-	//Constructor to initialize with 0 points
-	public Athlete(String id,String name,int age,String state) {
-		this(id,name,age,state,0);
 	}
 	
 	//getter for Points
