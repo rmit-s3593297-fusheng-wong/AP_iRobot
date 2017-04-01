@@ -1,8 +1,8 @@
 /*****Author - Jitender Singh Padda***********
  *****Student Id - 3628144************************/
-package assignment1;
+package jitender;
 
-public class Participant {
+public abstract class Participant {
 	private String id;
 	private String name;
 	private String state;
