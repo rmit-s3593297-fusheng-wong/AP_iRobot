@@ -1,6 +1,6 @@
 /*****Author - Jitender Singh Padda***********
  *****Student Id - 3628144************************/
-package assignment1;
+package jitender;
 
 public class SuperAthlete extends Athlete {
 	
