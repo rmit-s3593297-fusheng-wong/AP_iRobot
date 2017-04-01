@@ -1,6 +1,6 @@
 /*****Author - Jitender Singh Padda***********
  *****Student Id - 3628144************************/
-package assignment1;
+package jitender;
 
 public class Official extends Participant {
 	
@@ -14,10 +14,16 @@ public class Official extends Participant {
 		for(int i=0;i<athleteList.length-1;i++){
 			Athlete temp=null;
 			for(int j=0;j<athleteList.length-i-1;j++){
-				if(athleteList[j].getTime() > athleteList[j+1].getTime()){
-					temp=athleteList[j];
-					athleteList[j]=athleteList[j+1];
-					athleteList[j+1]=temp;
+				//Exception handling for possible Null references in array
+				try{	
+					if(athleteList[j].getTime() > athleteList[j+1].getTime()){
+						temp=athleteList[j];
+						athleteList[j]=athleteList[j+1];
+						athleteList[j+1]=temp;
+					}
+				}
+				catch(Exception NullPointerException){
+					continue;
 				}
 			}
 		}
