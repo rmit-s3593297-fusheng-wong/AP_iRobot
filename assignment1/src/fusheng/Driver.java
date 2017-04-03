@@ -2,7 +2,6 @@ package fusheng;
 
 import java.util.Scanner;
 import jitender.Athlete;
-import jitender.Official; 
 
 /**
  * @author fushwong
@@ -149,7 +148,7 @@ public class Driver {
 			if(games[i].hasResult()){
 				games[i].displayGameResults();
 			}else{
-				System.out.println(games[i].getGameID() + "has not yet been run");
+				System.out.println(games[i].getGameID() + " has not yet been run");
 			}
 		}
 		console(games,athletes);
