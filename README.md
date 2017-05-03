@@ -7,6 +7,10 @@ To run program from command prompt -
 2) Execute command - javac fusheng/Ozlympic.java
 3) Execute command - java -classpath ".;sqlite-jdbc-3.16.1.jar" fusheng/Ozlympic
 
+To run program from Eclipse -
+1) Go to Run Configuration for the project
+2) Go to Arguements and set working directory as Other and add this path ${workspace_loc:assignment1/src}
+
 /* notes from fush */
 
 User Manual
