@@ -1,0 +1,8 @@
+Oz1123, officer, Derek, 21, WA
+Oz3434, sprinter, Mary, 35, VIC
+Oz0091, super, Hannah, 24, NSW
+Oz1234, swimmer, Beck, 30, TAS
+Oz1123, officer, Derek, 21, WA
+, sprinter, Mary, 35, VIC 
+Oz1123, officer, Derek, 21, WA 
+Oz1234, , Beck, 30, TAS
