@@ -1,5 +1,12 @@
 # AP_iRobot
 RMIT Uni Assignment
+/* notes from Jitender */
+
+To run program from command prompt -
+1) Change path to src folder
+2) Execute command - javac fusheng/Ozlympic.java
+3) Execute command - java -classpath ".;sqlite-jdbc-3.16.1.jar" fusheng/Ozlympic
+
 /* notes from fush */
 
 User Manual
