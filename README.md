@@ -4,8 +4,8 @@ RMIT Uni Assignment
 
 To run program from command prompt -
 1) Change path to src folder
-2) Execute command - javac fusheng/Ozlympic.java
-3) Execute command - java -classpath ".;sqlite-jdbc-3.16.1.jar" fusheng/Ozlympic
+2) Execute command - javac main/Ozlympic.java
+3) Execute command - java -classpath ".;sqlite-jdbc-3.16.1.jar" main/Ozlympic
 
 To run program from Eclipse -
 1) Go to Run Configuration for the project
