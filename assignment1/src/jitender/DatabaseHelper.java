@@ -10,22 +10,54 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Scanner;
-
-import fusheng.Game;
 
 public class DatabaseHelper {
 	private Connection con;
+	private ArrayList<Athlete> athleteList;
+	private ArrayList<Official> officialList;
 	
 	public DatabaseHelper() throws ClassNotFoundException, SQLException{
-		File file = new File ("Ozlympic.db");
-		if(file.exists()){
+		athleteList=new ArrayList<Athlete>();
+		officialList=new ArrayList<Official>();
+		File dbFile = new File ("Ozlympic.db");
+		if(dbFile.exists()){
 			DatabaseConnection dbCon=new DatabaseConnection();
 			con=dbCon.SQLiteConnection();
 		}		
 	}
-	public String readParticipants() throws FileNotFoundException, SQLException{
-		return (con==null)? validate(readParticipantsTxt()):validate(readSQLiteDB());
+	public Athlete[] getAtheletes(){
+		return athleteList.toArray(new Athlete[athleteList.size()]);		
+	}
+	public Official[] getOfficials(){
+		return officialList.toArray(new Official[officialList.size()]);	
+	}
+	public void readParticipants() throws FileNotFoundException, SQLException{
+		String participants=(con==null)? validate(readParticipantsTxt()):validate(readSQLiteDB());
+		for(String participant :participants.split("\n")){
+			String[] participantAttributes=participant.split(",");
+			switch((participantAttributes[1]).trim()){
+				case "sprinter": athleteList.add(new Sprinter(participantAttributes[0], participantAttributes[2], Integer.valueOf(participantAttributes[3]), participantAttributes[4], 0));
+								 break;
+				case "cyclist": athleteList.add(new Cyclist(participantAttributes[0], participantAttributes[2], Integer.valueOf(participantAttributes[3]), participantAttributes[4], 0));
+				 				 break;
+				case "swimmer": athleteList.add(new Swimmer(participantAttributes[0], participantAttributes[2], Integer.valueOf(participantAttributes[3]), participantAttributes[4], 0));
+				 				 break;
+				case "super": athleteList.add(new SuperAthlete(participantAttributes[0], participantAttributes[2], Integer.valueOf(participantAttributes[3]), participantAttributes[4], 0));
+				 				 break;
+				case "officer": officialList.add(new Official(participantAttributes[0], participantAttributes[2], Integer.valueOf(participantAttributes[3]), participantAttributes[4]));
+ 				 				 break; 				 
+			}
+		}
+		System.out.println("athleteList---");
+		for(Athlete ath: athleteList){
+			System.out.println("athlete---"+ath.getName()+","+ath.getId()+","+ath.getAge()+","+ath.getState()+","+ath.getPoints());
+		}
+		System.out.println("officialList---");
+		for(Official off: officialList){
+			System.out.println("official---"+off.getName()+","+off.getId()+","+off.getAge()+","+off.getState());
+		}
 	}
 	public void writeGameResults() throws SQLException, IOException{
 		if(con==null){
@@ -58,12 +90,12 @@ public class DatabaseHelper {
 			participants=participants+scan.nextLine()+"\n";
 		}
 		scan.close();
-		System.out.println("participants---"+participants);
+		System.out.println("TextFile participants");
 		return participants;
 	}
 	public void writeGameResultTxt(Game finishedGame) throws IOException{
 
-		PrintWriter out = new PrintWriter(new FileWriter("C:/Users/TD/Desktop/gameResults.txt", true));
+		PrintWriter out = new PrintWriter(new FileWriter("gameResults.txt", true));
 		String timeStamp=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(System.currentTimeMillis());
 		out.println(finishedGame.getGameID()+", "+"finishedGame.getGameOfficial().Id"+", "+timeStamp.substring(0,timeStamp.length()-1));
 		for(int i=0;i<finishedGame.getAthleteCount();i++){
@@ -78,7 +110,7 @@ public class DatabaseHelper {
 		while(result.next()){
 			participants=participants+result.getString("id")+", "+result.getString("type")+", "+result.getString("name")+", "+result.getString("age")+", "+result.getString("state")+"\n";
 		}
-		System.out.println(participants);
+		System.out.println("SQLite participants");
 		return participants;		
 	}
 	public String validate(String participants){
@@ -96,11 +128,12 @@ public class DatabaseHelper {
 			}
 			if(count==5){// all 5 entries confirmed
 				if(!validParticipants.contains(participantId)){// Duplicate Check - If ID already exists then do not add
+					participant=participant.replaceAll("\\s","");
 					validParticipants=validParticipants+participant+"\n";
 				}
 			}
-			System.out.println("validParticipants->"+validParticipants);
 		}
+		//System.out.println("validParticipants\n"+validParticipants);
 		return validParticipants;
 	}
 	public void writeDatabase() throws SQLException{
