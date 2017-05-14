@@ -2,7 +2,7 @@
  *****Student Id - 3628144************************/
 package jitender;
 
-public abstract class Athlete extends Participant {
+public abstract class Athlete extends Participant implements Comparable<Athlete> {
 	
 	private int points;
 	private int time;
@@ -32,4 +32,11 @@ public abstract class Athlete extends Participant {
 	
 	//Abstract method which will be implemented by all sub classes
 	public abstract int compete();
+	
+	//Using Comparable interface for sorting
+	public int compareTo(Athlete otherAthlete){
+		if(this.getTime()>otherAthlete.getTime()) return 1;
+		if(this.getTime()<otherAthlete.getTime()) return -1;
+		return 0;
+	}
 }
