@@ -1,189 +1,217 @@
 package fusheng;
 
-import java.util.Scanner;
-import jitender.Athlete;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
-/**
- * @author fushwong
- *
- */
-public class Driver {
-	private static final int SELECT_GAME = 1;
-	private static final int PREDICT_WINNER = 2;
-	private static final int START_GAME = 3;
-	private static final int DISPLAY_ALL_GAMES = 4;
-	private static final int DISPLAY_ALL_ATHLETES = 5;
-	private static final int EXIT_GAME = 6;
-	private int currentGame = 0;
-	private int predictions = 0;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import jitender.Athlete;
+import jitender.DatabaseHelper;
+import jitender.Game;
+import jitender.Official;
+
+//this class will handle the views
+public class Driver extends Application {
+	private Stage primaryStage;
+	private MainMenuController mainMenuController;
+	private NewGameController newGameController;
+	private NewGameController chooseOfficialController;
+	private NewGameController chooseAthletesController;
+	private ResultsController gameResultsController;
+	private ResultsController athleteResultsController;
+	private Scene mainMenuScene;
+	private Scene chooseGameScene;
+	private Scene chooseOfficialScene;
+	private Scene chooseAthletesScene;
+	private Scene runSprintScene;
+	private Scene runSwimmingScene;
+	private Scene runCyclingScene;
+	private Scene gameResultsScene;
+	private Scene athleteResultsScene;
+	private ArrayList<Athlete> athleteList;
+	private ArrayList<Official> officialList;
+	private Game game = new Game();
+	private int gameCounter = 0;
 	
-	public void console(Game[] games, Athlete[] athletes){
-		Scanner sc = new Scanner(System.in);
-		displayMenu();
-		if (sc.hasNextInt()) {
-			switch(sc.nextInt()){
-			case EXIT_GAME:
-				System.out.println("Thank you for playing");
-				break;
-			case SELECT_GAME:
-				selectGame(games, athletes);
-				break;
-			case PREDICT_WINNER:
-				predictWinner(games, athletes);
-				break;
-			case START_GAME:
-				runGame(games, athletes);
-				break;
-			case DISPLAY_ALL_GAMES:
-				displayAllGameResults(games, athletes);
-				break;
-			case DISPLAY_ALL_ATHLETES:
-				displayAthletePoints(games, athletes);
-				break;
-			default:
-				System.out.println("Please choose a number between 1 and 6");
-				console(games,athletes);
-			}
-		}else{
-			System.out.println("Please choose a valid input");
-			console(games,athletes);
-		}
-		sc.close();
+	public Driver() throws ClassNotFoundException, FileNotFoundException, SQLException{
+		athleteList=new ArrayList<Athlete>();
+		officialList=new ArrayList<Official>();
+		//initiateParticipants();
 	}
 	
-	private void selectGame(Game[] games, Athlete[] athletes){
-		
-		System.out.println("List of Games");
-		System.out.println("===================================");
-		String strOutput;
-		for(int i=0;i<games.length;i++){
-			strOutput = (i+1) + ". " + games[i].getGameID();
-			strOutput += " - " + games[i].getGameType();
-			System.out.println(strOutput);
-		}
-		System.out.println("Select a Game: ");
-		
-		Scanner sc1 = new Scanner(System.in);
-		
-		if (sc1.hasNextInt()) {
-			int input = sc1.nextInt();
-			if(input<=games.length){
-				//this is the integer the user sees, in array it needs to be -1
-				currentGame = input;
-				
-				//reset the games prediction
-				games[currentGame-1].setGamePrediction("");
-				console(games,athletes);
-			}else{
-				System.out.println("Please choose a number between 1 and " + games.length);
-				selectGame(games, athletes);
-			}
-		}else{
-			System.out.println("Please choose a number between 1 and " + games.length);
-			selectGame(games, athletes);
-		}
-		sc1.close();
+	public void gameCreated(){
+		this.gameCounter ++;
 	}
 	
-	private void predictWinner(Game[] games, Athlete[] athletes){
-		//check that game is chosen
-		if(gameChosen()){
-			//list athletes
-			System.out.println("List of athletes");
-			System.out.println("===================================");
-			games[currentGame-1].getAthleteNames(games[currentGame-1]);
-			System.out.println("Select an Athlete: ");
+	public int getGameCounter(){
+		return gameCounter;
+	}
+	
+	public Game getGame(){
+		return game;
+	}
+
+	public Stage getPrimaryStage() {
+		return primaryStage;
+	}
+
+	public MainMenuController getMainMenuController() {
+		return mainMenuController;
+	}
+
+	public NewGameController getNewGameController() {
+		return newGameController;
+	}
+
+	public ResultsController getGameResultsController() {
+		return gameResultsController;
+	}
+	
+	public ResultsController getAthleteResultsController() {
+		return athleteResultsController;
+	}
+
+	public Scene getMainMenuScene() {
+		return mainMenuScene;
+	}
+
+	public Scene getChooseGameScene() {
+		return chooseGameScene;
+	}
+
+	public Scene getChooseOfficialScene() {
+		return chooseOfficialScene;
+	}
+
+	public Scene getChooseAthletesScene() {
+		return chooseAthletesScene;
+	}
+
+	public Scene getRunSprintScene() {
+		return runSprintScene;
+	}
+
+	public Scene getRunSwimmingScene() {
+		return runSwimmingScene;
+	}
+
+	public Scene getRunCyclingScene() {
+		return runCyclingScene;
+	}
+	
+	public Scene getGameResultsScene() {
+		return gameResultsScene;
+	}
+	
+	public Scene getAthletesResultScene() {
+		return athleteResultsScene;
+	}
+
+	//real program starts here
+	public void begin(String[] args) {
+		launch(args);
+	}
+
+	@Override
+	public void start(Stage primaryStage) {
+		this.primaryStage = primaryStage;
+		primaryStage.setResizable(false);
+
+		initiateScenes();
+		displayMainMenu();
+		//load db
+	}
+	
+	private void initiateParticipants() throws ClassNotFoundException, SQLException, FileNotFoundException{
+		DatabaseHelper dbHelper;
+		//Add a method for reading Game Results in DatabaseHelper
+		/****READ****/
+		dbHelper= new DatabaseHelper();
+		dbHelper.readParticipants();
+		athleteList=dbHelper.getAtheletes();
+		officialList=dbHelper.getOfficials();
+	}
+	
+	//this method initiates the scenes
+	private void initiateScenes(){
+		try {
+			//main menu
+			FXMLLoader loader = new FXMLLoader(Ozlympic.class.getResource("/fusheng/MainMenu.fxml"));
+			Parent root = (Parent) loader.load();
+			mainMenuController = loader.getController();
+			mainMenuScene = new Scene(root, 600, 600);
+			mainMenuController.setDriver(this);
 			
-			Scanner sc = new Scanner(System.in);
-			if (sc.hasNextInt()) {
-				int input = sc.nextInt();
-				if(input > 0 && input <= games[currentGame-1].getAthleteCount()){
-					//get the athletes ID
-					String athleteID = games[currentGame-1].getGameAthleteID(input-1);
-					games[currentGame-1].setGamePrediction(athleteID); 
-					
-					console(games,athletes);
-				}else{
-					System.out.println("Please choose a number between 1 and " + games[currentGame-1].getAthleteCount());
-					selectGame(games, athletes);
-				}
-				
-			}else{
-				System.out.println("Please choose a number between 1 and " + games[currentGame-1].getAthleteCount());
-				selectGame(games, athletes);
-			}
-			sc.close();
+			//choose game
+			FXMLLoader loader2 = new FXMLLoader(Ozlympic.class.getResource("/fusheng/ChooseGame.fxml"));
+			Parent root2 = (Parent) loader2.load();
+			chooseGameScene = new Scene(root2, 600, 600);
+			newGameController = loader2.getController();
+			newGameController.setDriver(this);
 			
-		}else{
-			System.out.println("Please choose a game first");
-			console(games,athletes);
-		}
-		
-		
-	}
-	
-	private void runGame(Game[] games,Athlete[] athletes){
-		//check that a game has been chosen
-		if(gameChosen()){
-			//check that a prediction has been made
-			if(games[currentGame-1].getGamePrediction() != ""){
-				predictions += games[currentGame-1].runGame();
-				
-				//reset game's prediction
-				games[currentGame-1].setGamePrediction("");
-				
-				//reset the chosen game
-				currentGame = 0;
-			}else{
-				System.out.println("Please predict a winner first");
-			}
-		}else{
-			System.out.println("Please choose a game first");
-		}
-		console(games,athletes);
-	}
-	
-	private void displayAllGameResults(Game[] games, Athlete[] athletes){
-		for(int i=0;i<games.length;i++){
-			if(games[i].hasResult()){
-				games[i].displayGameResults();
-			}else{
-				System.out.println(games[i].getGameID() + " has not yet been run");
-			}
-		}
-		console(games,athletes);
-	}
-	
-	private void displayAthletePoints(Game[] games, Athlete[] athletes){
-		for(int i=0;i<athletes.length;i++){
-			System.out.println("Name: " + athletes[i].getName());
-			System.out.println("===================================");
-			System.out.println("Age: " + athletes[i].getAge());
-			System.out.println("State: " + athletes[i].getState());
-			System.out.println("Points: " + athletes[i].getPoints());
-			System.out.println("");
-		}
-		console(games,athletes);
-	}
-	
-	private void displayMenu(){
-		System.out.println("Total successful predictions: " + predictions);
-		System.out.println("===================================");
-		System.out.println("1. Select a game to run");
-		System.out.println("2. Predict the winner of the game");
-		System.out.println("3. Start the game");
-		System.out.println("4. Display the final results of all games");
-		System.out.println("5. Display the points of all athletes");
-		System.out.println("6. Exit");
-		System.out.println("Enter an option: ");
-		System.out.println(" ");
-	}
-	
-	private boolean gameChosen(){
-		if(currentGame > 0){
-			return true;
-		}else{
-			return false;
+			//game results
+			FXMLLoader loader5 = new FXMLLoader(Ozlympic.class.getResource("/fusheng/GameResults.fxml"));
+			Parent root5 = (Parent) loader5.load();
+			gameResultsScene = new Scene(root5, 600, 600);
+			gameResultsController = loader5.getController();
+			gameResultsController.setDriver(this); 
+			
+			//athlete results
+			FXMLLoader loader6 = new FXMLLoader(Ozlympic.class.getResource("/fusheng/AthletePoints.fxml"));
+			Parent root6 = (Parent) loader6.load();
+			athleteResultsScene = new Scene(root6, 600, 600);
+			gameResultsController = loader6.getController();
+			gameResultsController.setDriver(this); 
+			
+			initiateOfficialScene();
+			initiateAthleteScene();
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			//System.out.println(e.getMessage());
 		}
 	}
+	
+	public void initiateOfficialScene() throws IOException{
+		//select official
+		FXMLLoader loader = new FXMLLoader(Ozlympic.class.getResource("/fusheng/ChooseOfficial.fxml"));
+		Parent root = (Parent) loader.load();
+		chooseOfficialController = loader.getController();
+		chooseOfficialScene = new Scene(root, 600, 600);
+		chooseOfficialController.setDriver(this);
+	}
+	
+	public void initiateAthleteScene() throws IOException{
+		//select official
+		FXMLLoader loader = new FXMLLoader(Ozlympic.class.getResource("/fusheng/ChooseAthletes.fxml"));
+		Parent root = (Parent) loader.load();
+		chooseAthletesController = loader.getController();
+		chooseAthletesScene = new Scene(root, 600, 600);
+		chooseAthletesController.setDriver(this);
+	}
+	
+	//this is the start of the user interface
+	public void displayMainMenu(){
+		primaryStage.setTitle("Main Menu");
+		primaryStage.setScene(mainMenuScene);
+		primaryStage.show();
+	}
+	
+	public ArrayList<String> getAllGameResults() throws ClassNotFoundException, SQLException, FileNotFoundException{
+		DatabaseHelper dbHelper=new DatabaseHelper();
+		return dbHelper.getAllGameResults();
+	}
+	public ArrayList<Athlete> getAthleteList() {
+		return athleteList;
+	}
+	public ArrayList<Official> getOfficialList() {
+		return officialList;
+	}
+
 }

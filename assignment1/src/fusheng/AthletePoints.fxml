@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane  maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fusheng.ResultsController">
+	<children>
+      <Label contentDisplay="CENTER" textAlignment="CENTER" layoutX="114.0" layoutY="14.0" text="View Athelete Points">
+         <font>
+            <Font name="System Bold" size="36.0" />
+         </font>
+      </Label>
+      <Button contentDisplay="CENTER" textAlignment="CENTER" layoutX="114.0" layoutY="445.0" mnemonicParsing="false" onAction="#back" prefHeight="39.0" prefWidth="373.0" text="Back to Main" />
+   </children>
+</AnchorPane>
+
