@@ -1,3 +1,5 @@
+/*****Author - Jitender Singh Padda***********
+ *****Student Id - 3628144************************/
 package jitender;
 
 import java.io.File;
@@ -11,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class DatabaseHelper {
@@ -27,11 +30,11 @@ public class DatabaseHelper {
 			con=dbCon.SQLiteConnection();
 		}		
 	}
-	public Athlete[] getAtheletes(){
-		return athleteList.toArray(new Athlete[athleteList.size()]);		
+	public ArrayList<Athlete> getAtheletes(){
+		return athleteList;		
 	}
-	public Official[] getOfficials(){
-		return officialList.toArray(new Official[officialList.size()]);	
+	public ArrayList<Official> getOfficials(){
+		return officialList;	
 	}
 	public void readParticipants() throws FileNotFoundException, SQLException{
 		String participants=(con==null)? validate(readParticipantsTxt()):validate(readSQLiteDB());
@@ -51,36 +54,19 @@ public class DatabaseHelper {
 			}
 		}
 		System.out.println("athleteList---");
-		for(Athlete ath: athleteList){
-			System.out.println("athlete---"+ath.getName()+","+ath.getId()+","+ath.getAge()+","+ath.getState()+","+ath.getPoints());
+		for(Athlete athlete: athleteList){
+			System.out.println("athlete---"+athlete.getName()+","+athlete.getId()+","+athlete.getAge()+","+athlete.getState()+","+athlete.getPoints());
 		}
 		System.out.println("officialList---");
-		for(Official off: officialList){
-			System.out.println("official---"+off.getName()+","+off.getId()+","+off.getAge()+","+off.getState());
+		for(Official official: officialList){
+			System.out.println("official---"+official.getName()+","+official.getId()+","+official.getAge()+","+official.getState());
 		}
 	}
-	public void writeGameResults() throws SQLException, IOException{
-		if(con==null){
-			Athlete athletes[] = new Athlete[12];
-			athletes[0] = new Cyclist("AC01","Rohan Dennis", 26, "South Australia", 0);
-			athletes[1] = new Cyclist("AC02","Simon Gerrens", 36, "Victoria", 0);
-			athletes[2] = new Cyclist("AC03","Cadel Evans", 40, "Northern Territory", 0);
-			athletes[3] = new Swimmer("AS01","Libby Trickett", 32, "Queensland", 0);
-			athletes[4] = new Swimmer("AS02","Leisel Jones", 31, "Northern Territory", 0);
-			athletes[5] = new Swimmer("AS03","Emily Seebohm", 24, "South Australia", 0);
-			athletes[6] = new Sprinter("AP01","Alex Hartmann", 24, "South Australia", 0);
-			athletes[7] = new Sprinter("AP02","Josh Clarke", 21, "New South Wales", 0);
-			athletes[8] = new Sprinter("AP03","Tim Leathart", 27, "New South Wales", 0);
-			athletes[9] = new SuperAthlete("AA01","Chuck Norris", 77, "Oklahoma", 0);
-			athletes[10] = new SuperAthlete("AA02","Triple H", 47, "New Hampshire", 0);
-			athletes[11] = new SuperAthlete("AA03","Mike Tyson", 50, "New York", 0);
-
-			Athlete[] gameAthletes1 = {athletes[0],athletes[1],athletes[2],athletes[9]};
-			writeGameResultTxt(new Game("C01", "Cycling",new Official("O01","Cycling Referee", 40, "Victoria"),gameAthletes1));
-		}
-		else {
-			writeDatabase();
-		}
+	public void writeGameResults(Game finishedGame) throws SQLException, IOException{
+		if(con==null)
+			writeGameResultTxt(finishedGame);
+		else 
+			writeDatabase(finishedGame);
 	}
 	public String readParticipantsTxt() throws FileNotFoundException{
 		String participants="";
@@ -97,9 +83,9 @@ public class DatabaseHelper {
 
 		PrintWriter out = new PrintWriter(new FileWriter("gameResults.txt", true));
 		String timeStamp=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(System.currentTimeMillis());
-		out.println(finishedGame.getGameID()+", "+"finishedGame.getGameOfficial().Id"+", "+timeStamp.substring(0,timeStamp.length()-1));
-		for(int i=0;i<finishedGame.getAthleteCount();i++){
-			out.println(finishedGame.getGameAthleteID(i)+", "+"finishedGame.getResult()"+", "+"finishedGame.getAthletePoints()");
+		out.println(finishedGame.getGameID()+", "+finishedGame.getGameOfficial().getId()+", "+timeStamp.substring(0,timeStamp.length()-1));
+		for(Athlete athlete:finishedGame.getGameAthletes()){
+			out.println(athlete.getId()+", "+athlete.getTime()+", "+athlete.getPoints());
 		}
 		out.println();
 		out.close();
@@ -111,6 +97,7 @@ public class DatabaseHelper {
 			participants=participants+result.getString("id")+", "+result.getString("type")+", "+result.getString("name")+", "+result.getString("age")+", "+result.getString("state")+"\n";
 		}
 		System.out.println("SQLite participants");
+		con.close();
 		return participants;		
 	}
 	public String validate(String participants){
@@ -136,8 +123,86 @@ public class DatabaseHelper {
 		//System.out.println("validParticipants\n"+validParticipants);
 		return validParticipants;
 	}
-	public void writeDatabase() throws SQLException{
-		String updateStatement="INSERT INTO gameResults (\"Game ID\",\"Official ID\",\"Athlete ID\",Result,Score) VALUES ('G01','OFF1','AT1',10.5,2);";
-		int result=con.createStatement().executeUpdate(updateStatement);
+	public void writeDatabase(Game finishedGame) throws SQLException{
+		String insertValues="";
+		for(Athlete athlete:finishedGame.getGameAthletes()){
+			insertValues=insertValues+"('"+finishedGame.getGameID()+"'"+","+"'"+finishedGame.getGameOfficial().getId()+"'"+","+"'"+athlete.getId()+"'"+","+athlete.getTime()+","+athlete.getPoints()+"),";
+		}
+		insertValues=insertValues.substring(0,insertValues.length()-1)+";";
+		String updateStatement="INSERT INTO gameResults (\"Game ID\",\"Official ID\",\"Athlete ID\",Result,Score) VALUES "+insertValues;
+		con.createStatement().executeUpdate(updateStatement);
+		con.close();
+	}
+	public ArrayList<String> getAllGameResults() throws FileNotFoundException, SQLException{
+		String allGameResults=(con==null?getAllResultsTxt():getAllResultsSQliteDB());
+		//Creating Map of gameId and Participants - Assuming all athletes to be Sprinters
+		/*HashMap<String,ArrayList<Participant>> gameId_ParticipantList_Map=new HashMap<String,ArrayList<Participant>>();
+		for(String athleteRecord: allGameResults.split("\n")){
+			String gameId=athleteRecord.split(",")[0].trim();
+			if(gameId_ParticipantList_Map.containsKey(gameId)){
+				gameId_ParticipantList_Map.get(gameId).add(new Sprinter(athleteRecord.split(",")[2].trim(), "Irrelevant", 0, "Irrelevant", 0));
+			}
+			else {
+				ArrayList<Participant> participantList=new ArrayList<Participant>();
+				participantList.add(new Official(athleteRecord.split(",")[1], "Irrelevant", 0, "Irrelevant"));
+				Sprinter sprint=new Sprinter(athleteRecord.split(",")[2].trim(), "Irrelevant", 0, "Irrelevant", 0);
+				sprint.setTime(Integer.valueOf(athleteRecord.split(",")[3].trim()));
+				participantList.add(sprint);
+				gameId_ParticipantList_Map.put(gameId,participantList);
+			}
+		}
+		//Creating Game Objects from gameId_ParticipantList_Map
+		ArrayList<Game> gameList=new ArrayList<Game>();
+		ArrayList<Athlete> athList=new ArrayList<Athlete>();
+		for(String gameId:gameId_ParticipantList_Map.keySet()){
+			Official gameOfficial = null;
+			ArrayList<Participant> participantList=gameId_ParticipantList_Map.get(gameId);
+			for(Participant participant: participantList){
+				if(participant instanceof Official){
+					gameOfficial=(Official) participant;
+				}
+				else athList.add((Athlete) participant);
+			}
+			participantList.remove(gameOfficial);
+			gameList.add(new Game(gameId, "Sprinting", gameOfficial, athList));
+		}
+		for(Game game:gameList){
+			System.out.println("gameId----"+game.getGameID());
+		}*/
+		return new ArrayList<String>(Arrays.asList(allGameResults.split("\n")));
+	}
+	public String getAllResultsTxt() throws FileNotFoundException{
+		Scanner	scan = new Scanner(new FileReader("gameResults.txt"));
+		String gameResults="";
+		String gameDetails="";
+		int flag=0;
+		//Read file gameResults.txt
+		while(scan.hasNextLine()){
+			String[] values=scan.nextLine().split(",");
+			if(values.length>1){
+				if(flag==0){
+					gameDetails=gameDetails+values[0]+","+values[1]+", ";
+					flag=1;
+				}
+				else gameResults=gameResults+gameDetails+values[0]+","+values[1]+","+values[2]+"\n";
+			}
+			else {
+				gameDetails="";
+				flag=0;
+			}
+		}
+		System.out.println("gameResultsTxt===\n"+gameResults);
+		scan.close();
+		return gameResults;
+	}
+	public String getAllResultsSQliteDB() throws SQLException{
+		String gameResults="";
+		ResultSet result=con.createStatement().executeQuery("SELECT \"Game ID\",\"Official ID\",\"Athlete ID\",Result,Score FROM gameResults");
+		while(result.next()){
+			gameResults=gameResults+result.getString("Game ID")+", "+result.getString("Official ID")+", "+result.getString("Athlete ID")+", "+result.getInt("Result")+", "+result.getInt("Score")+"\n";
+		}
+		System.out.println("gameResultsSQlite===\n"+gameResults);
+		con.close();
+		return gameResults;
 	}
 }
