@@ -6,13 +6,16 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane  maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fusheng.NewGameController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fusheng.ChooseAthletesController">
 	<children>
-      <Label contentDisplay="CENTER" layoutX="207.0" layoutY="14.0" text="Choose Athletes">
+      <Label contentDisplay="CENTER" layoutX="163.0" layoutY="14.0" text="Choose Athletes">
          <font>
             <Font name="System Bold" size="36.0" />
          </font>
       </Label>
-      <Button contentDisplay="CENTER" textAlignment="CENTER" layoutX="114.0" layoutY="445.0" mnemonicParsing="false" onAction="#back" prefHeight="39.0" prefWidth="373.0" text="Back to Main" />
+      <Button contentDisplay="CENTER" layoutX="46.0" layoutY="446.0" mnemonicParsing="false" onAction="#back" prefHeight="39.0" prefWidth="180.0" text="Back to Main" textAlignment="CENTER" />
+      <VBox fx:id="vBox" layoutX="78.0" layoutY="67.0" prefHeight="354.0" prefWidth="445.0" />
+      <Button contentDisplay="CENTER" layoutX="371.0" layoutY="446.0" mnemonicParsing="false" onAction="#setGameAthletes" prefHeight="39.0" prefWidth="180.0" text="Run Game" textAlignment="CENTER" />
+      <Label fx:id="errorLabel" layoutX="45.0" layoutY="525.0" prefHeight="27.0" prefWidth="511.0" styleClass="errorLabel" stylesheets="@application.css" />
    </children>
 </AnchorPane>

@@ -20,9 +20,9 @@ public class Driver extends Application {
 	private Stage primaryStage;
 	private MainMenuController mainMenuController;
 	private NewGameController newGameController;
-	private NewGameController chooseOfficialController;
-	private NewGameController chooseAthletesController;
-	private ResultsController gameResultsController;
+	private ChooseOfficialController chooseOfficialController;
+	private ChooseAthletesController chooseAthletesController;
+	private GameResultsController gameResultsController;
 	private ResultsController athleteResultsController;
 	private Scene mainMenuScene;
 	private Scene chooseGameScene;
@@ -35,13 +35,15 @@ public class Driver extends Application {
 	private Scene athleteResultsScene;
 	private ArrayList<Athlete> athleteList;
 	private ArrayList<Official> officialList;
+	private ArrayList<Game> gameList = new ArrayList<Game>();
 	private Game game = new Game();
 	private int gameCounter = 0;
+	private static final String STYLESHEET = "application.css";
 	
 	public Driver() throws ClassNotFoundException, FileNotFoundException, SQLException{
 		athleteList=new ArrayList<Athlete>();
 		officialList=new ArrayList<Official>();
-		//initiateParticipants();
+		initiateParticipants();
 	}
 	
 	public void gameCreated(){
@@ -67,8 +69,16 @@ public class Driver extends Application {
 	public NewGameController getNewGameController() {
 		return newGameController;
 	}
+	
+	public ChooseOfficialController getChooseOfficialController() {
+		return chooseOfficialController;
+	}
+	
+	public ChooseAthletesController getChooseAthleteController() {
+		return chooseAthletesController;
+	}
 
-	public ResultsController getGameResultsController() {
+	public GameResultsController getGameResultsController() {
 		return gameResultsController;
 	}
 	
@@ -110,6 +120,22 @@ public class Driver extends Application {
 	
 	public Scene getAthletesResultScene() {
 		return athleteResultsScene;
+	}
+	
+	public ArrayList<String> getAllGameResults() throws ClassNotFoundException, SQLException, FileNotFoundException{
+		DatabaseHelper dbHelper=new DatabaseHelper();
+		return dbHelper.getAllGameResults();
+	}
+	
+	public ArrayList<Athlete> getAthleteList() {
+		return athleteList;
+	}
+	public ArrayList<Official> getOfficialList() {
+		return officialList;
+	}
+	
+	public ArrayList<Game> getGameList() {
+		return gameList;
 	}
 
 	//real program starts here
@@ -159,14 +185,14 @@ public class Driver extends Application {
 			Parent root5 = (Parent) loader5.load();
 			gameResultsScene = new Scene(root5, 600, 600);
 			gameResultsController = loader5.getController();
-			gameResultsController.setDriver(this); 
+			gameResultsController.setDriver(this);
 			
 			//athlete results
-			FXMLLoader loader6 = new FXMLLoader(Ozlympic.class.getResource("/fusheng/AthletePoints.fxml"));
+			FXMLLoader loader6 = new FXMLLoader(Ozlympic.class.getResource("/fusheng/AthleteResults.fxml"));
 			Parent root6 = (Parent) loader6.load();
 			athleteResultsScene = new Scene(root6, 600, 600);
-			gameResultsController = loader6.getController();
-			gameResultsController.setDriver(this); 
+			athleteResultsController = loader6.getController();
+			athleteResultsController.setDriver(this);
 			
 			initiateOfficialScene();
 			initiateAthleteScene();
@@ -178,16 +204,17 @@ public class Driver extends Application {
 		}
 	}
 	
-	public void initiateOfficialScene() throws IOException{
-		//select official
+	private void initiateOfficialScene() throws IOException{
+		
 		FXMLLoader loader = new FXMLLoader(Ozlympic.class.getResource("/fusheng/ChooseOfficial.fxml"));
 		Parent root = (Parent) loader.load();
 		chooseOfficialController = loader.getController();
 		chooseOfficialScene = new Scene(root, 600, 600);
+		chooseOfficialScene.getStylesheets().add(getClass().getResource(STYLESHEET).toExternalForm());
 		chooseOfficialController.setDriver(this);
 	}
 	
-	public void initiateAthleteScene() throws IOException{
+	private void initiateAthleteScene() throws IOException{
 		//select official
 		FXMLLoader loader = new FXMLLoader(Ozlympic.class.getResource("/fusheng/ChooseAthletes.fxml"));
 		Parent root = (Parent) loader.load();
@@ -203,15 +230,6 @@ public class Driver extends Application {
 		primaryStage.show();
 	}
 	
-	public ArrayList<String> getAllGameResults() throws ClassNotFoundException, SQLException, FileNotFoundException{
-		DatabaseHelper dbHelper=new DatabaseHelper();
-		return dbHelper.getAllGameResults();
-	}
-	public ArrayList<Athlete> getAthleteList() {
-		return athleteList;
-	}
-	public ArrayList<Official> getOfficialList() {
-		return officialList;
-	}
+	
 
 }

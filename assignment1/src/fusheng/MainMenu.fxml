@@ -13,9 +13,10 @@
             <Font name="System Bold" size="36.0" />
          </font>
       </Label>
-      <Button id="NewGame" fx:id="NewGame" contentDisplay="CENTER" layoutX="112.0" layoutY="77.0" mnemonicParsing="false" onAction="#createGame" prefHeight="114.0" prefWidth="380.0" text="Create a New Game" textAlignment="CENTER" />
-      <Button id="two" fx:id="GameResults" layoutX="112.0" layoutY="210.0" mnemonicParsing="false" onAction="#viewGameResults" prefHeight="114.0" prefWidth="380.0" text="View All Game Results" />
-      <Button id="three" fx:id="AthleteResults" layoutX="112.0" layoutY="343.0" mnemonicParsing="false" onAction="#viewAthleteResults" prefHeight="114.0" prefWidth="380.0" text="View All Participants Results" />
-      <Button id="four" fx:id="Exit" layoutX="114.0" layoutY="472.0" mnemonicParsing="false" onAction="#closeApplication" prefHeight="114.0" prefWidth="380.0" text="Exit" />
+      <Button id="NewGame" fx:id="NewGame" contentDisplay="CENTER" layoutX="112.0" layoutY="77.0" mnemonicParsing="false" onAction="#createGame" prefHeight="61.0" prefWidth="380.0" text="Create a New Game" textAlignment="CENTER" />
+      <Button id="two" fx:id="GameResults" layoutX="110.0" layoutY="176.0" mnemonicParsing="false" onAction="#viewGameResults" prefHeight="61.0" prefWidth="380.0" text="View All Game Results" />
+      <Button id="three" fx:id="AthleteResults" layoutX="112.0" layoutY="285.0" mnemonicParsing="false" onAction="#viewAthleteResults" prefHeight="61.0" prefWidth="380.0" text="View All Participants Results" />
+      <Button id="four" fx:id="Exit" layoutX="112.0" layoutY="392.0" mnemonicParsing="false" onAction="#closeApplication" prefHeight="61.0" prefWidth="380.0" text="Exit" />
+      <Label fx:id="errorLabel" layoutX="50.0" layoutY="501.0" prefHeight="27.0" prefWidth="508.0" styleClass="errorLabel" stylesheets="@application.css" textAlignment="CENTER" textFill="RED" />
    </children>
 </AnchorPane>
