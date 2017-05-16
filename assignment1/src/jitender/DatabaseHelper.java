@@ -24,6 +24,7 @@ public class DatabaseHelper {
 	public DatabaseHelper() throws ClassNotFoundException, SQLException{
 		athleteList=new ArrayList<Athlete>();
 		officialList=new ArrayList<Official>();
+		//Check if SQLite database file exists, otherwise don't create connection
 		File dbFile = new File ("Ozlympic.db");
 		if(dbFile.exists()){
 			DatabaseConnection dbCon=new DatabaseConnection();
@@ -37,7 +38,9 @@ public class DatabaseHelper {
 		return officialList;	
 	}
 	public void readParticipants() throws FileNotFoundException, SQLException{
+		//Read and Validate from Txt or SQLite
 		String participants=(con==null)? validate(readParticipantsTxt()):validate(readSQLiteDB());
+		//Parse data rows into Participants
 		for(String participant :participants.split("\n")){
 			String[] participantAttributes=participant.split(",");
 			switch((participantAttributes[1]).trim()){
@@ -62,16 +65,17 @@ public class DatabaseHelper {
 			System.out.println("official---"+official.getName()+","+official.getId()+","+official.getAge()+","+official.getState());
 		}
 	}
+	//Write game results
 	public void writeGameResults(Game finishedGame) throws SQLException, IOException{
 		if(con==null)
 			writeGameResultTxt(finishedGame);
 		else 
 			writeDatabase(finishedGame);
 	}
+	//Read file participants.txt
 	public String readParticipantsTxt() throws FileNotFoundException{
 		String participants="";
 		Scanner	scan = new Scanner(new FileReader("participants.txt"));
-		//Read file participants.txt
 		while(scan.hasNextLine()){
 			participants=participants+scan.nextLine()+"\n";
 		}
@@ -79,6 +83,7 @@ public class DatabaseHelper {
 		System.out.println("TextFile participants");
 		return participants;
 	}
+	//Write to gameResults.txt
 	public void writeGameResultTxt(Game finishedGame) throws IOException{
 
 		PrintWriter out = new PrintWriter(new FileWriter("gameResults.txt", true));
@@ -90,6 +95,7 @@ public class DatabaseHelper {
 		out.println();
 		out.close();
 	}
+	//Read file Ozlympic.db
 	public String readSQLiteDB() throws SQLException{
 		String participants="";
 		ResultSet result=con.createStatement().executeQuery("SELECT id,type,name,age,state FROM participants");
@@ -100,6 +106,7 @@ public class DatabaseHelper {
 		con.close();
 		return participants;		
 	}
+	//Validate -> Check for duplicates and null values in columns
 	public String validate(String participants){
 		String validParticipants="";
 		for(String participant : participants.split("\n")){
@@ -123,6 +130,7 @@ public class DatabaseHelper {
 		//System.out.println("validParticipants\n"+validParticipants);
 		return validParticipants;
 	}
+	//Write to Ozlympic.db
 	public void writeDatabase(Game finishedGame) throws SQLException{
 		String insertValues="";
 		for(Athlete athlete:finishedGame.getGameAthletes()){
@@ -133,44 +141,12 @@ public class DatabaseHelper {
 		con.createStatement().executeUpdate(updateStatement);
 		con.close();
 	}
+	//Get all Game Results
 	public ArrayList<String> getAllGameResults() throws FileNotFoundException, SQLException{
 		String allGameResults=(con==null?getAllResultsTxt():getAllResultsSQliteDB());
-		//Creating Map of gameId and Participants - Assuming all athletes to be Sprinters
-		/*HashMap<String,ArrayList<Participant>> gameId_ParticipantList_Map=new HashMap<String,ArrayList<Participant>>();
-		for(String athleteRecord: allGameResults.split("\n")){
-			String gameId=athleteRecord.split(",")[0].trim();
-			if(gameId_ParticipantList_Map.containsKey(gameId)){
-				gameId_ParticipantList_Map.get(gameId).add(new Sprinter(athleteRecord.split(",")[2].trim(), "Irrelevant", 0, "Irrelevant", 0));
-			}
-			else {
-				ArrayList<Participant> participantList=new ArrayList<Participant>();
-				participantList.add(new Official(athleteRecord.split(",")[1], "Irrelevant", 0, "Irrelevant"));
-				Sprinter sprint=new Sprinter(athleteRecord.split(",")[2].trim(), "Irrelevant", 0, "Irrelevant", 0);
-				sprint.setTime(Integer.valueOf(athleteRecord.split(",")[3].trim()));
-				participantList.add(sprint);
-				gameId_ParticipantList_Map.put(gameId,participantList);
-			}
-		}
-		//Creating Game Objects from gameId_ParticipantList_Map
-		ArrayList<Game> gameList=new ArrayList<Game>();
-		ArrayList<Athlete> athList=new ArrayList<Athlete>();
-		for(String gameId:gameId_ParticipantList_Map.keySet()){
-			Official gameOfficial = null;
-			ArrayList<Participant> participantList=gameId_ParticipantList_Map.get(gameId);
-			for(Participant participant: participantList){
-				if(participant instanceof Official){
-					gameOfficial=(Official) participant;
-				}
-				else athList.add((Athlete) participant);
-			}
-			participantList.remove(gameOfficial);
-			gameList.add(new Game(gameId, "Sprinting", gameOfficial, athList));
-		}
-		for(Game game:gameList){
-			System.out.println("gameId----"+game.getGameID());
-		}*/
 		return new ArrayList<String>(Arrays.asList(allGameResults.split("\n")));
 	}
+	//Read results from gameResults.txt
 	public String getAllResultsTxt() throws FileNotFoundException{
 		Scanner	scan = new Scanner(new FileReader("gameResults.txt"));
 		String gameResults="";
@@ -195,6 +171,7 @@ public class DatabaseHelper {
 		scan.close();
 		return gameResults;
 	}
+	//Read results from gameResults table in Ozlympic.db
 	public String getAllResultsSQliteDB() throws SQLException{
 		String gameResults="";
 		ResultSet result=con.createStatement().executeQuery("SELECT \"Game ID\",\"Official ID\",\"Athlete ID\",Result,Score FROM gameResults");

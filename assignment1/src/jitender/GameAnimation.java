@@ -28,17 +28,21 @@ public class GameAnimation {
 	private HashMap<Athlete,ProgressBar> athleteProgBarMap;
 	private HashMap<Athlete,ProgressIndicator> athleteProgIndMap;
 	private Timer timer;
-	Stage stage;
-	Scene mainMenuScene;
-	Game finishedGame;
+	private Stage mainStage;
+	private Stage stage;
+	private Scene mainMenuScene;
+	private Game finishedGame;
 
 	public GameAnimation(Stage stage,Scene mainMenuScene,Game finishedGame) {
 		athleteProgBarMap=new HashMap<Athlete,ProgressBar>();
 		athleteProgIndMap=new HashMap<Athlete,ProgressIndicator>();
-		this.stage=stage;
+		this.mainStage=stage;
+		mainStage.hide();
+		this.stage = new Stage();
 		this.mainMenuScene=mainMenuScene;
 		this.finishedGame=finishedGame;
 	}
+	//Load UI elements onto the stage - ProgressBars, Labels, ProgressIndicators
 	public void runAnimation(){
 		Group root = new Group();
         Scene scene = new Scene(root, 300, 250);
@@ -71,7 +75,8 @@ public class GameAnimation {
         Button back = new Button("Back to Main");
         backHandlerClass handler = new backHandlerClass();
         back.setOnAction(handler);
-        
+        back.setTranslateX(250);
+        //Set Event handler for ProgressBars and ProgressIndicators
         progress(athleteProgBarMap,athleteProgIndMap);
         final VBox vb = new VBox();
         vb.setSpacing(5);
@@ -85,15 +90,16 @@ public class GameAnimation {
 	}
 	//Listener
     public void progress(HashMap<Athlete,ProgressBar> athleteProgBarMap,HashMap<Athlete,ProgressIndicator> athleteProgIndMap){
-    	
+    	//Listener which updates on every second of a timer
     	ActionListener listener = new ActionListener() {
             int counter = 1;
             double progress;
+          //Updates Progress of each Athlete
             public void actionPerformed(ActionEvent ae) {
                 int countCompleted=0;
             	for(Athlete athlete:athleteProgBarMap.keySet() ){
             		progress=Double.valueOf(counter)/athlete.getTime();
-            		System.out.println(athlete.getTime());
+            		//System.out.println(athlete.getTime());
                     DecimalFormat df = new DecimalFormat("#.##");
                     df.setRoundingMode(RoundingMode.CEILING);
                     progress=Double.valueOf(df.format(progress));
@@ -110,15 +116,13 @@ public class GameAnimation {
                     athleteProgIndMap.get(athlete).setProgress(progress);
             	}
             	counter++;
+            	//Check if all Athletes completed
             	if (countCompleted==athleteProgBarMap.size()) {
                 	timer.stop();
-                	String strOutput = "1st: " + finishedGame.getGameAthletes().get(0).getName() + "|" + finishedGame.getGameAthletes().get(0).getTime();
-                	strOutput += "\n 2nd: " + finishedGame.getGameAthletes().get(1).getName() + "|" + finishedGame.getGameAthletes().get(1).getTime();
-                	strOutput += "\n 3rd: " + finishedGame.getGameAthletes().get(2).getName() + "|" + finishedGame.getGameAthletes().get(2).getTime();
+                	String strOutput = "1st: " + finishedGame.getGameAthletes().get(0).getName() + " | " + finishedGame.getGameAthletes().get(0).getTime();
+                	strOutput += "\n 2nd: " + finishedGame.getGameAthletes().get(1).getName() + " | " + finishedGame.getGameAthletes().get(1).getTime();
+                	strOutput += "\n 3rd: " + finishedGame.getGameAthletes().get(2).getName() + " | " + finishedGame.getGameAthletes().get(2).getTime();
                 	JOptionPane.showMessageDialog(null, strOutput);
-                	//System.exit(0);
-                	//Take Back Control from here
-                	
                 }
             }
         };
@@ -126,21 +130,17 @@ public class GameAnimation {
         timer.start();
         
     }
-    
-    private void goHome(){
-    	stage.setTitle("Main Menu");
-    	stage.setScene(mainMenuScene);
-    	stage.show();
-    }
+
     
   //display the athlete list after selecting official
   	class backHandlerClass implements EventHandler<javafx.event.ActionEvent>{
 
 		@Override
 		public void handle(javafx.event.ActionEvent event) {
-			stage.setTitle("Main Menu");
-  	    	stage.setScene(mainMenuScene);
-  	    	stage.show();
+			mainStage.setTitle("Main Menu");
+			mainStage.setScene(mainMenuScene);
+			mainStage.show();
+			stage.close();
 		}
   	}
 
