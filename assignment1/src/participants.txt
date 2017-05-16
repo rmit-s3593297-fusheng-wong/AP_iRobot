@@ -6,3 +6,36 @@ Oz1123, officer, Derek, 21, WA
 , sprinter, Mary, 35, VIC 
 Oz1123, officer, Derek, 21, WA 
 Oz1234, , Beck, 30, TAS
+Oz1236, sprinter, Don, 30, TAS
+Oz1256, sprinter, Jon, 30, TAS
+Oz1436, sprinter, Ron, 30, TAS
+Oz0001,officer,Jim Carey,20,VIC
+Oz0002,swimmer,Tom Hanks,21,TA
+Oz0003,cyclist,Jamie Oliver,22,WA
+Oz0004,sprinter,Stephen Hawkins,23,ACT
+Oz0005,super,Triple H,24,NSW
+Oz0006,officer,Steve Austin,25,NT
+Oz0007,swimmer,Gordon Ramsay,26,QLD
+Oz0008,cyclist,Cristiano Ronaldo,27,SA
+Oz0009,sprinter,Lionel Messi,28,VIC
+Oz0010,super,Homy,29,TA
+Oz0011,officer,Emma Watson,30,WA
+Oz0012,swimmer,Bob Marley,31,ACT
+Oz0013,cyclist,Justin Beiber,32,NSW
+Oz0014,sprinter,Indiana Jones,33,NT
+Oz0015,super,Luke Skywalker,34,QLD
+Oz0016,officer,Chris Smalling,35,SA
+Oz0017,swimmer,Rio Ferdinand,36,VIC
+Oz0018,cyclist,Wayne Rooney,37,TA
+Oz0019,sprinter,Donald Trump,38,WA
+Oz0020,super,Vladimir Putin,39,ACT
+Oz0021,officer,Steve Jobs,40,NSW
+Oz0022,swimmer,Angeline Jolie,41,NT
+Oz0023,cyclist,The Rock,42,QLD
+Oz0024,sprinter,Taylor Swift,43,SA
+Oz0025,super athlete,Selena Gomez,44,VIC
+Oz0026,officer,Ariana Grande,45,TA
+Oz0027,swimmer,Beyonce,46,WA
+Oz0028,cyclist,Kim Kardashian,47,ACT
+Oz0029,sprinter,Kylie Jenner,48,NSW
+Oz0030,super,Adam Saddler,49,NT
