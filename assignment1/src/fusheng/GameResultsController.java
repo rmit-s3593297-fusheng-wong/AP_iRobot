@@ -22,7 +22,6 @@ public ObservableList<Game> gameList;
 	
 	public void setDriver(Driver driver) {
 		this.driver = driver;
-		
 	}
 	
 	public void viewGameResults() {

@@ -12,4 +12,6 @@
 	-fx-background-radius: 8,7,6;
 	-fx-background-insets: 0,1,2;
 	-fx-text-fill: black;
+	-fx-pref-height: 50px;
+    -fx-pref-width: 150px;
 }

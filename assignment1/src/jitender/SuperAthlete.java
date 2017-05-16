@@ -21,13 +21,13 @@ public class SuperAthlete extends Athlete {
 	public int compete() {
 		Athlete superAthlete = null;
 		//SuperAthlete will create an instance of the type of Athlete according to gameType and call it's compete() method
-		if(gameType=="Cycling"){
+		if(gameType.equals("Cycling")){
 			superAthlete=new Cyclist(getId(),getName(),getAge(),getState(),getPoints());
 		}
-		else if(gameType=="Swimming"){
+		else if(gameType.equals("Swimming")){
 			superAthlete=new Swimmer(getId(),getName(),getAge(),getState(),getPoints());
 		}
-		else if(gameType=="Sprinting"){
+		else if(gameType.equals("Sprinting")){
 			superAthlete=new Sprinter(getId(),getName(),getAge(),getState(),getPoints());
 		}
 		return superAthlete.compete();

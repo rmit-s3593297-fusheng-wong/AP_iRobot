@@ -7,8 +7,12 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import jitender.Athlete;
 import jitender.Cyclist;
+import jitender.GameAnimation;
+import jitender.GameFullException;
+import jitender.NoRefereeException;
 import jitender.Sprinter;
 import jitender.Swimmer;
+import jitender.TooFewAthleteException;
 
 public class ChooseAthletesController {
 	private Driver driver;
@@ -53,22 +57,23 @@ public class ChooseAthletesController {
 		//loop through checkboxes
 		for(Node child : vBox.getChildren()){
 			if(((CheckBox) child).isSelected()){
-				System.out.println("Selected");
+				//look for the athlete with the id
 				for (Athlete athlete : driver.getAthleteList()) {
 					//the athlete ID is stored in the checkbox ID
 					if (athlete.getId().equals(((CheckBox) child).getId())) {
 						// check athlete type
-						if (athlete instanceof Swimmer && driver.getGame().getGameType()!="Swimming") {
-							//wrong type error
+						// System.out.println(athlete.getName() + " " + driver.getGame().getGameType() + " " +!(driver.getGame().getGameType().equals("Cycling")));
+						if (athlete instanceof Swimmer && !(driver.getGame().getGameType().equals("Swimming"))) {
 							errorLabel.setText("Wrong athlete type has been selected");
+							//System.out.println(athlete.getName() + " swim");
 							isValid = false; break;
-						}else if(athlete instanceof Cyclist && driver.getGame().getGameType()!="Cycling") {
-							//wrong type error
+						}else if((athlete instanceof Cyclist) && !(driver.getGame().getGameType().equals("Cycling"))) {
 							errorLabel.setText("Wrong athlete type has been selected");
+							//System.out.println(athlete.getName() + " cyc");
 							isValid = false; break;
-						}else if(athlete instanceof Sprinter && driver.getGame().getGameType()!="Sprinting") {
-							//wrong type error
+						}else if(athlete instanceof Sprinter && !(driver.getGame().getGameType().equals("Sprinting"))) {
 							errorLabel.setText("Wrong athlete type has been selected");
+							//System.out.println(athlete.getName() + " spr");
 							isValid = false; break;
 						}else{
 							athleteCounter++;
@@ -80,45 +85,55 @@ public class ChooseAthletesController {
 		}
 
 		//if < 4 or > 8, cancel display athletes again
-		if(athleteCounter<4 && isValid){
-			errorLabel.setText("Please select at least 4 athletes to participate");
-			isValid = false;
-		}else if(athleteCounter < 8 && isValid){
-			errorLabel.setText("Please select at most 8 athletes to participate");
-			isValid = false;
+		if(isValid){
+			try{
+				isValid = validate(athleteCounter);
+			}catch (TooFewAthleteException e){
+				isValid = false;
+				e.printStackTrace();
+				errorLabel.setText(e.getMessage());
+			} catch (GameFullException e) {
+				isValid = false;
+				e.printStackTrace();
+				errorLabel.setText(e.getMessage());
+			}
 		}
-		
+
+		System.out.println(isValid);
 		if(isValid){
 			//move to game
+			driver.getGameList().add(driver.getGame());
 			displayGameScene();
 		}
+	}
+	
+	private boolean validate(int athleteCounter) throws TooFewAthleteException, GameFullException{
+		boolean isValid = true;
+		if(athleteCounter < 4){
+			isValid = false;
+			throw new TooFewAthleteException("Please select at least 4 athletes to participate");
+		}else if(athleteCounter > 8){
+			isValid = false;
+			throw new GameFullException("Please select at least 4 athletes to participate");
+		}
+		return isValid;
 	}
 
 	private void displayGameScene(){
 		//sort the times first
 		System.out.println("Game Running");
-		runGame();
-		//depends on game type
-		//switch case
-		switch(driver.getGame().getGameType()){
-			case "Swimming":
-				driver.getPrimaryStage().setTitle("Swimming Game");
-				//driver.getPrimaryStage().setScene(driver.getSwimmingGame());
-				driver.getPrimaryStage().show();
-				break;
-			case "Cycling":
-				break;
-			case "Sprinting":
-				break;
+		try {
+			driver.getGame().runGame();
+			GameAnimation gameAnimate=new GameAnimation(driver.getPrimaryStage(), driver.getMainMenuScene(), driver.getGame());
+			gameAnimate.runAnimation();
+		} catch (TooFewAthleteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoRefereeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-	}
-	
-	//this method will run the game
-	private void runGame(){
-		//sort based on times
-		driver.getGame().setGameAthletes(driver.getGame().getGameOfficial().sumGame(driver.getGame().getGameAthletes()));
-		//add to completed games
-		driver.getGameList().add(driver.getGame());
+		
 	}
 		
 	//return to the main menu

@@ -14,6 +14,7 @@ import jitender.Athlete;
 import jitender.DatabaseHelper;
 import jitender.Game;
 import jitender.Official;
+import main.Ozlympic;
 
 //this class will handle the views
 public class Driver extends Application {
@@ -52,6 +53,10 @@ public class Driver extends Application {
 	
 	public int getGameCounter(){
 		return gameCounter;
+	}
+	
+	public void increaseGameCounter(){
+		gameCounter++;
 	}
 	
 	public Game getGame(){
@@ -229,7 +234,5 @@ public class Driver extends Application {
 		primaryStage.setScene(mainMenuScene);
 		primaryStage.show();
 	}
-	
-	
 
 }

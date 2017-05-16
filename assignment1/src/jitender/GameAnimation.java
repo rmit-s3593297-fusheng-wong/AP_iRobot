@@ -4,6 +4,7 @@ package jitender;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javafx.event.EventHandler;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import javax.swing.Timer;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
@@ -27,12 +29,14 @@ public class GameAnimation {
 	private HashMap<Athlete,ProgressIndicator> athleteProgIndMap;
 	private Timer timer;
 	Stage stage;
+	Scene mainMenuScene;
 	Game finishedGame;
 
-	public GameAnimation(Stage stage,Game finishedGame) {
+	public GameAnimation(Stage stage,Scene mainMenuScene,Game finishedGame) {
 		athleteProgBarMap=new HashMap<Athlete,ProgressBar>();
 		athleteProgIndMap=new HashMap<Athlete,ProgressIndicator>();
 		this.stage=stage;
+		this.mainMenuScene=mainMenuScene;
 		this.finishedGame=finishedGame;
 	}
 	public void runAnimation(){
@@ -63,15 +67,19 @@ public class GameAnimation {
             
             athleteProgBarMap.put(athlete,pBar);
             athleteProgIndMap.put(athlete,pInd);
-            
         }
+        Button back = new Button("Back to Main");
+        backHandlerClass handler = new backHandlerClass();
+        back.setOnAction(handler);
+        
         progress(athleteProgBarMap,athleteProgIndMap);
         final VBox vb = new VBox();
         vb.setSpacing(5);
         vb.getChildren().addAll(HBoxes);
+        vb.getChildren().add(back);
         scene.setRoot(vb);
-        stage.setMinHeight(450);
-        stage.setMinWidth(300);
+        stage.setMinHeight(600);
+        stage.setMinWidth(600);
         stage.show();
 
 	}
@@ -85,6 +93,7 @@ public class GameAnimation {
                 int countCompleted=0;
             	for(Athlete athlete:athleteProgBarMap.keySet() ){
             		progress=Double.valueOf(counter)/athlete.getTime();
+            		System.out.println(athlete.getTime());
                     DecimalFormat df = new DecimalFormat("#.##");
                     df.setRoundingMode(RoundingMode.CEILING);
                     progress=Double.valueOf(df.format(progress));
@@ -103,14 +112,36 @@ public class GameAnimation {
             	counter++;
             	if (countCompleted==athleteProgBarMap.size()) {
                 	timer.stop();
-                	JOptionPane.showMessageDialog(null, "Game Complete !");
-                	System.exit(0);
+                	String strOutput = "1st: " + finishedGame.getGameAthletes().get(0).getName() + "|" + finishedGame.getGameAthletes().get(0).getTime();
+                	strOutput += "\n 2nd: " + finishedGame.getGameAthletes().get(1).getName() + "|" + finishedGame.getGameAthletes().get(1).getTime();
+                	strOutput += "\n 3rd: " + finishedGame.getGameAthletes().get(2).getName() + "|" + finishedGame.getGameAthletes().get(2).getTime();
+                	JOptionPane.showMessageDialog(null, strOutput);
+                	//System.exit(0);
                 	//Take Back Control from here
+                	
                 }
             }
         };
         timer = new Timer(1000, listener);
         timer.start();
+        
     }
+    
+    private void goHome(){
+    	stage.setTitle("Main Menu");
+    	stage.setScene(mainMenuScene);
+    	stage.show();
+    }
+    
+  //display the athlete list after selecting official
+  	class backHandlerClass implements EventHandler<javafx.event.ActionEvent>{
+
+		@Override
+		public void handle(javafx.event.ActionEvent event) {
+			stage.setTitle("Main Menu");
+  	    	stage.setScene(mainMenuScene);
+  	    	stage.show();
+		}
+  	}
 
 }
