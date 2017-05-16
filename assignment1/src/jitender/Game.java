@@ -10,6 +10,10 @@ public class Game {
 	private Official gameOfficial;
 	private ArrayList<Athlete> gameAthletes;
 	
+	public Game(){
+		gameAthletes=new ArrayList<Athlete>();
+	}
+	
 	public Game(String gameID, String gameType, Official gameOfficial, ArrayList<Athlete> gameAthletes){
 		this.gameID = gameID;
 		this.gameType = gameType;
@@ -21,6 +25,22 @@ public class Game {
 		return this.gameID;
 	}
 	
+	public void setGameID(String gameID) {
+		this.gameID = gameID;
+	}
+
+	public void setGameType(String gameType) {
+		this.gameType = gameType;
+	}
+
+	public void setGameOfficial(Official gameOfficial) {
+		this.gameOfficial = gameOfficial;
+	}
+
+	public void setGameAthletes(ArrayList<Athlete> gameAthletes) {
+		this.gameAthletes = gameAthletes;
+	}
+
 	public String getGameType(){
 		return this.gameType;
 	}
