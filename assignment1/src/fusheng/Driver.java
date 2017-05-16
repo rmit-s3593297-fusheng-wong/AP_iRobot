@@ -36,14 +36,17 @@ public class Driver extends Application {
 	private Scene athleteResultsScene;
 	private ArrayList<Athlete> athleteList;
 	private ArrayList<Official> officialList;
-	private ArrayList<Game> gameList = new ArrayList<Game>();
-	private Game game = new Game();
-	private int gameCounter = 0;
+	private ArrayList<Game> gameList;
+	private Game game;
+	private int gameCounter;
 	private static final String STYLESHEET = "application.css";
 	
 	public Driver() throws ClassNotFoundException, FileNotFoundException, SQLException{
 		athleteList=new ArrayList<Athlete>();
 		officialList=new ArrayList<Official>();
+		gameList = new ArrayList<Game>();
+		game = new Game();
+		gameCounter = 0;
 		initiateParticipants();
 	}
 	

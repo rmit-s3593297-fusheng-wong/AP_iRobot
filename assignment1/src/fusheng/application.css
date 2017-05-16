@@ -14,4 +14,5 @@
 	-fx-text-fill: black;
 	-fx-pref-height: 50px;
     -fx-pref-width: 150px;
+    -fx-padding: 20px;
 }

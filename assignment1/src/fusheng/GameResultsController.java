@@ -13,10 +13,10 @@ public class GameResultsController {
 	@FXML private TableView<Game> gameTable;
 	@FXML private TableColumn<Game, String> gameID;
 	@FXML private TableColumn<Game, String> gameType;
-	@FXML private TableColumn<Game, String> gameOfficial;
-	@FXML private TableColumn<Game, String> gameAthlete1;
-	@FXML private TableColumn<Game, String> gameAthlete2;
-	@FXML private TableColumn<Game, String> gameAthlete3;
+	@FXML private TableColumn<Game, String> officialName;
+	@FXML private TableColumn<Game, String> athleteName1;
+	@FXML private TableColumn<Game, String> athleteName2;
+	@FXML private TableColumn<Game, String> athleteName3;
 	
 public ObservableList<Game> gameList;
 	
@@ -27,10 +27,10 @@ public ObservableList<Game> gameList;
 	public void viewGameResults() {
 		gameID.setCellValueFactory(new PropertyValueFactory<Game, String>("gameID"));
 		gameType.setCellValueFactory(new PropertyValueFactory<Game, String>("gameType"));
-		gameOfficial.setCellValueFactory(new PropertyValueFactory<Game, String>(driver.getGame().getGameOfficial().getName()));
-		gameOfficial.setCellValueFactory(new PropertyValueFactory<Game, String>(driver.getGame().getGameAthletes().get(0).getName()));
-		gameOfficial.setCellValueFactory(new PropertyValueFactory<Game, String>(driver.getGame().getGameAthletes().get(1).getName()));
-		gameOfficial.setCellValueFactory(new PropertyValueFactory<Game, String>(driver.getGame().getGameAthletes().get(2).getName()));
+		officialName.setCellValueFactory(new PropertyValueFactory<Game, String>("officialName"));
+		athleteName1.setCellValueFactory(new PropertyValueFactory<Game, String>("athleteName1"));
+		athleteName2.setCellValueFactory(new PropertyValueFactory<Game, String>("athleteName2"));
+		athleteName3.setCellValueFactory(new PropertyValueFactory<Game, String>("athleteName3"));
 		gameList = FXCollections.observableList(driver.getGameList());
 		gameTable.setItems(gameList);
 		driver.getPrimaryStage().setTitle("View Game Results");

@@ -1,12 +1,18 @@
 package fusheng;
 
+import java.io.IOException;
+import java.sql.SQLException;
+
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import jitender.Athlete;
 import jitender.Cyclist;
+import jitender.DatabaseHelper;
+import jitender.Game;
 import jitender.GameAnimation;
 import jitender.GameFullException;
 import jitender.NoRefereeException;
@@ -19,12 +25,14 @@ public class ChooseAthletesController {
 	
 	@FXML private VBox vBox;
 	@FXML private Label errorLabel;
+	@FXML private ScrollPane scrollPane;
 
 	public void setDriver(Driver driver) {
 		this.driver = driver;
 		displayList();
 	}
 	
+	//list the athletes
 	public void displayList(){
 		String gameType;
 		for(int i=0;i<driver.getAthleteList().size();i++){
@@ -62,18 +70,14 @@ public class ChooseAthletesController {
 					//the athlete ID is stored in the checkbox ID
 					if (athlete.getId().equals(((CheckBox) child).getId())) {
 						// check athlete type
-						// System.out.println(athlete.getName() + " " + driver.getGame().getGameType() + " " +!(driver.getGame().getGameType().equals("Cycling")));
 						if (athlete instanceof Swimmer && !(driver.getGame().getGameType().equals("Swimming"))) {
 							errorLabel.setText("Wrong athlete type has been selected");
-							//System.out.println(athlete.getName() + " swim");
 							isValid = false; break;
 						}else if((athlete instanceof Cyclist) && !(driver.getGame().getGameType().equals("Cycling"))) {
 							errorLabel.setText("Wrong athlete type has been selected");
-							//System.out.println(athlete.getName() + " cyc");
 							isValid = false; break;
 						}else if(athlete instanceof Sprinter && !(driver.getGame().getGameType().equals("Sprinting"))) {
 							errorLabel.setText("Wrong athlete type has been selected");
-							//System.out.println(athlete.getName() + " spr");
 							isValid = false; break;
 						}else{
 							athleteCounter++;
@@ -99,11 +103,14 @@ public class ChooseAthletesController {
 			}
 		}
 
-		System.out.println(isValid);
 		if(isValid){
 			//move to game
-			driver.getGameList().add(driver.getGame());
-			displayGameScene();
+			try {
+				displayGameScene();
+			} catch (ClassNotFoundException | SQLException | IOException e) {
+				errorLabel.setText(e.getMessage());
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -114,23 +121,70 @@ public class ChooseAthletesController {
 			throw new TooFewAthleteException("Please select at least 4 athletes to participate");
 		}else if(athleteCounter > 8){
 			isValid = false;
-			throw new GameFullException("Please select at least 4 athletes to participate");
+			throw new GameFullException("Please select at most 8 athletes to participate");
 		}
 		return isValid;
 	}
 
-	private void displayGameScene(){
+	private void displayGameScene() throws ClassNotFoundException, SQLException, IOException{
 		//sort the times first
-		System.out.println("Game Running");
+		
 		try {
+			String newID="";
+			String padding="";
+			driver.increaseGameCounter();
+			if(driver.getGameCounter()<10){
+				padding += "0" + driver.getGameCounter();
+			}else{
+				padding += driver.getGameCounter();
+			}
+			
+			switch(driver.getGame().getGameType()){
+			case "Swimming":
+				newID = "S" + padding;
+				break;
+			case "Sprinting":
+				newID = "R" + padding;
+				break;
+			case "Cycling":
+				newID = "C" + padding;
+				break;
+			}
 			driver.getGame().runGame();
+			
+			String OfficialName = driver.getGame().getGameOfficial().getName();
+			String AthleteName1 = driver.getGame().getGameAthletes().get(0).getName();
+			String AthleteName2 = driver.getGame().getGameAthletes().get(1).getName();
+			String AthleteName3 = driver.getGame().getGameAthletes().get(2).getName();
+			
+			driver.getGame().setGameID(newID);
+			driver.getGame().setOfficialName(OfficialName);
+			driver.getGame().setAthleteName1(AthleteName1);
+			driver.getGame().setAthleteName2(AthleteName2);
+			driver.getGame().setAthleteName3(AthleteName3);
+			
+			Game toSave = new Game();
+			toSave.setGameID(driver.getGame().getGameID());
+			toSave.setGameType(driver.getGame().getGameType());
+			toSave.setGameOfficial(driver.getGame().getGameOfficial());
+			toSave.setGameAthletes(driver.getGame().getGameAthletes());
+			toSave.setOfficialName(driver.getGame().getOfficialName());
+			toSave.setAthleteName1(driver.getGame().getAthleteName1());
+			toSave.setAthleteName2(driver.getGame().getAthleteName2());
+			toSave.setAthleteName3(driver.getGame().getAthleteName3());
+			
+			driver.getGameList().add(toSave);
+			
+			DatabaseHelper dbHelper= new DatabaseHelper();
+			dbHelper.writeGameResults(toSave);
 			GameAnimation gameAnimate=new GameAnimation(driver.getPrimaryStage(), driver.getMainMenuScene(), driver.getGame());
 			gameAnimate.runAnimation();
+			
 		} catch (TooFewAthleteException e) {
-			// TODO Auto-generated catch block
+			errorLabel.setText(e.getMessage());
 			e.printStackTrace();
 		} catch (NoRefereeException e) {
-			// TODO Auto-generated catch block
+			errorLabel.setText(e.getMessage());
 			e.printStackTrace();
 		}
 		
