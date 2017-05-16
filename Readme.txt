@@ -1,3 +1,6 @@
+s3593297 Fu Sheng Wong
+s3628144 Jitender Singh Prada
+
 To run program from command prompt -
 
 Change path to src folder
