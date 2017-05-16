@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fusheng.GameResultsController">
+	<children>
+      <Label layoutX="150.0" layoutY="14.0" text="View Game Results">
+         <font>
+            <Font name="System Bold" size="36.0" />
+         </font>
+      </Label>
+      <Button contentDisplay="CENTER" layoutX="114.0" layoutY="524.0" mnemonicParsing="false" onAction="#back" prefHeight="39.0" prefWidth="373.0" text="Back to Main" textAlignment="CENTER" />
+      <TableView fx:id="gameTable" layoutX="23.0" layoutY="100.0" prefHeight="404.0" prefWidth="555.0">
+        <columns>
+          <TableColumn fx:id="gameID" prefWidth="38.0" text="ID" />
+          <TableColumn fx:id="gameType" minWidth="0.0" prefWidth="67.0" text="Type" />
+            <TableColumn fx:id="officialName" prefWidth="75.0" text="Official" />
+            <TableColumn fx:id="athleteName1" prefWidth="125.0" text="First" />
+            <TableColumn fx:id="athleteName2" prefWidth="123.0" text="Second" />
+            <TableColumn fx:id="athleteName3" prefWidth="126.0" text="Third" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>

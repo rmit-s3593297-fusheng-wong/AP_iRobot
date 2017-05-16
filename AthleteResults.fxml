@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fusheng.ResultsController">
+   <children>
+      <Label contentDisplay="CENTER" layoutX="114.0" layoutY="14.0" text="View Athelete Points" textAlignment="CENTER">
+         <font>
+            <Font name="System Bold" size="36.0" />
+         </font>
+      </Label>
+      <TableView fx:id="athleteTable" layoutX="34.0" layoutY="67.0" prefHeight="445.0" prefWidth="513.0">
+        <columns>
+          <TableColumn fx:id="id" prefWidth="49.0" text="ID" />
+          <TableColumn fx:id="name" prefWidth="186.0" text="Name" />
+            <TableColumn fx:id="age" prefWidth="67.0" text="Age" />
+            <TableColumn fx:id="state" prefWidth="104.0" text="State" />
+            <TableColumn fx:id="points" prefWidth="106.0" text="Points" />
+        </columns>
+      </TableView>
+      <Button contentDisplay="CENTER" layoutX="114.0" layoutY="536.0" mnemonicParsing="false" onAction="#back" prefHeight="39.0" prefWidth="373.0" text="Back to Main" textAlignment="CENTER" />
+   </children>
+</AnchorPane>
